@@ -4,6 +4,10 @@
 	"description": "",
 	"license": "ISC",
 	"author": "",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/r01al/expressjs-body-validation.git"
+	},
 	"type": "commonjs",
 	"engines": {
 		"node": ">=14"
