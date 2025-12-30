@@ -338,6 +338,31 @@ mustFail(
 );
 
 mustPass(
+	"body is array of strings passes",
+	[
+		"one",
+		"two",
+		"three"
+	],
+	[
+		SchemaType.String
+	]
+);
+
+mustFail(
+	"body is array of strings fails",
+	[
+		"one",
+		2,
+		"three"
+	],
+	[
+		SchemaType.String
+	],
+	"expected string"
+);
+
+mustPass(
 	"null type passes",
 	{
 		value: null
@@ -529,6 +554,133 @@ mustFail(
 			typeof value.name === "string"
 	},
 	"invalid field"
+);
+
+mustPass(
+	"array of arrays passes",
+	{
+		matrix: [
+			[1, 2, 3],
+			[4, 5, 6]
+		]
+	},
+	{
+		matrix: [
+			[
+				SchemaType.Number
+			]
+		]
+	}
+);
+
+mustFail(
+	"array of arrays fails on inner item",
+	{
+		matrix: [
+			[1, 2],
+			[3, "4"]
+		]
+	},
+	{
+		matrix: [
+			[
+				SchemaType.Number
+			]
+		]
+	},
+	"expected number"
+);
+
+mustPass(
+	"array of mixed object shapes via function",
+	{
+		items: [
+			{
+				type: "A",
+				value: 10
+			},
+			{
+				type: "B",
+				value: "ok"
+			}
+		]
+	},
+	{
+		items: [
+			(value) =>
+				value &&
+				typeof value === "object" &&
+				((value.type === "A" && typeof value.value === "number") ||
+					(value.type === "B" && typeof value.value === "string"))
+		]
+	}
+);
+
+mustFail(
+	"array of mixed object shapes via function fails",
+	{
+		items: [
+			{
+				type: "A",
+				value: 10
+			},
+			{
+				type: "B",
+				value: 99
+			}
+		]
+	},
+	{
+		items: [
+			(value) =>
+				value &&
+				typeof value === "object" &&
+				((value.type === "A" && typeof value.value === "number") ||
+					(value.type === "B" && typeof value.value === "string"))
+		]
+	},
+	"invalid field"
+);
+
+mustFail(
+	"invalid schema array length",
+	{
+		value: [
+			1,
+			2
+		]
+	},
+	{
+		value: [
+			SchemaType.Number,
+			SchemaType.Number
+		]
+	},
+	"invalid schema"
+);
+
+mustFail(
+	"invalid schema primitive value",
+	{
+		value: 1
+	},
+	{
+		value: 123
+	},
+	"invalid schema"
+);
+
+mustFail(
+	"function validator throws",
+	{
+		value: 1
+	},
+	{
+		value: () => {
+			throw new Error("boom");
+		}
+	},
+	"boom"
 );
 
 console.log("🎉 All tests passed.");

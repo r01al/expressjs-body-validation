@@ -72,6 +72,67 @@ Supported shapes:
 - **Arrays**: `[SchemaType.String]` or `[{ id: SchemaType.Number }]`
 - **Functions**: `(value) => boolean` to fully override validation at that node
 
+Schema is validated before use. Invalid schemas return an error message instead of throwing.
+
+## Examples ✨
+
+### Array body
+
+```ts
+app.post(
+	"/tags",
+	validateBody([
+		SchemaType.String
+	]),
+	(req, res) => {
+		res.json({ ok: true });
+	}
+);
+```
+
+### Nested object + arrays
+
+```ts
+validateBody({
+	order: {
+		id: SchemaType.String,
+		items: [
+			{
+				sku: SchemaType.String,
+				qty: SchemaType.Number
+			}
+		]
+	}
+});
+```
+
+### Function override
+
+```ts
+validateBody({
+	password: (value) => typeof value === "string" && value.length >= 8
+});
+```
+
+#### Function validator details
+
+- The function receives the **raw value** at that schema node.
+- Return `true` to accept, `false` to reject.
+- If the function throws, the error is caught and returned as a validation message.
+
+Example with custom error message:
+
+```ts
+validateBody({
+	age: (value) => {
+		if (typeof value !== "number") {
+			throw new Error("age must be a number");
+		}
+		return value >= 18;
+	}
+});
+```
+
 ## Errors ⚠️
 
 If validation fails, the middleware responds with HTTP 400:

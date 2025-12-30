@@ -1,5 +1,6 @@
 import type { SchemaValue } from "./schemaTypes";
 import { ensureRootPath } from "./schemaUtils";
+import { validateSchemaDefinition } from "./validateSchemaDefinition";
 import { validateArray } from "./validators/validateArray";
 import { validateFunction } from "./validators/validateFunction";
 import { validateObject } from "./validators/validateObject";
@@ -10,6 +11,9 @@ export const validateAgainstSchema = (
 	schema: SchemaValue,
 	path = ""
 ): string | null => {
+	const schemaError = validateSchemaDefinition(schema, path);
+	if (schemaError) return schemaError;
+
 	if (typeof schema === "function") {
 		return validateFunction(payload, schema, path);
 	}

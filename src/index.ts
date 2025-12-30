@@ -7,3 +7,4 @@ export type {
 	SchemaValue
 } from "./validator/validateSchema";
 export { SchemaType } from "./validator/validateSchema";
+export { validateSchemaDefinition } from "./validator/validateSchema";
