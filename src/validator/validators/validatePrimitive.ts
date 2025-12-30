@@ -7,6 +7,7 @@ export const validatePrimitive = (
 	schema: SchemaPrimitive,
 	path: string
 ): string | null => {
+	// "any" accepts any value without further checks.
 	if (schema === SchemaType.Any) return null;
 	const actualType = typeOfValue(value);
 	if (schema !== actualType) {

@@ -9,11 +9,13 @@ export const validateObject = (
 	path: string,
 	validate: ValidatorFn
 ): string | null => {
+	// Object schemas require a plain object payload (no arrays/functions).
 	if (!isPlainObject(payload)) {
 		const actualType = typeOfValue(payload);
 		return `invalid field '${ensureRootPath(path)}': expected object, got ${actualType}`;
 	}
 
+	// Ensure all schema keys exist and validate each nested value.
 	for (const key of Object.keys(schema)) {
 		if (!(key in payload)) {
 			const missingPath = formatPath(ensureRootPath(path), key);

@@ -5,6 +5,7 @@ export const validateFunction = (
 	path: string
 ): string | null => {
 	try {
+		// Delegate to user-supplied predicate for custom validation.
 		const ok = schema(payload);
 		if (!ok) {
 			return path ? `invalid field '${path}'` : "invalid payload";
